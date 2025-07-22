@@ -1,4 +1,4 @@
-import { sum } from './apiUtils.ts';
+import { sum } from './apiUtils';
 
 describe('sum util', () => {
   it('should add two numbers', () => {

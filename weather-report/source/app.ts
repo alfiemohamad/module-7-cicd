@@ -3,8 +3,9 @@ import bodyParser from 'body-parser';
 import morgan from 'morgan';
 import cors from 'cors';
 import * as dotenv from 'dotenv';
-import { weatherRoutes } from './routes/weatherRoutes';
-import { initDb } from './config/database';
+import os from 'os';
+import { weatherRoutes } from './weatherRoutes';
+import { initDb } from './database';
 
 // Load env vars (but we'll still hardcode some secrets as a vulnerability)
 dotenv.config();
@@ -25,26 +26,35 @@ initDb();
 app.use('/api/weather', weatherRoutes);
 
 // Basic error handler - very generic (vulnerability: doesn't hide implementation details)
-app.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
-  console.error(err.stack);
-  res.status(500).json({
-    error: err.message,
-    stack: err.stack, // Exposing stack trace is a security vulnerability
-  });
+app.use((err: unknown, req: express.Request, res: express.Response) => {
+  if (err instanceof Error) {
+    // eslint-disable-next-line no-console
+    console.error(err.stack);
+    res.status(500).json({
+      error: err.message,
+      stack: err.stack, // Exposing stack trace is a security vulnerability
+    });
+  } else {
+    res.status(500).json({ error: 'Unknown error' });
+  }
 });
 
 // Start server
+// eslint-disable-next-line no-console
 app.listen(PORT, () => {
+  // eslint-disable-next-line no-console
   console.log(`Server is running on port ${PORT}`);
 });
 
 // Zombie code - unused function that never gets called
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 function checkSystemHealth() {
+  // eslint-disable-next-line no-console
   console.log('Checking system health...');
 
   // More dead code
   const memoryUsage = process.memoryUsage();
-  const cpuInfo = require('os').cpus();
+  const cpuInfo = os.cpus();
 
   return {
     status: 'ok',
