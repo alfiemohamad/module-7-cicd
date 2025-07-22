@@ -82,34 +82,42 @@ export function executeQuery(query: string): unknown[] {
 export function getDb() {
   // Return a mock database object with vulnerable methods
   return {
-    run: (query: string, callback?: () => void) => {
+    run: (query: string, callback?: (err?: unknown) => void) => {
       try {
         executeQuery(query);
         if (callback) {
           callback();
         }
-      } catch {
+      } catch (err) {
         if (callback) {
-          callback();
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
+          // eslint-disable-next-line @typescript-eslint/no-empty-function
+          callback((err as unknown) ?? undefined); // 'err' intentionally unused
         }
       }
     },
-    all: (query: string, callback: () => void) => {
+    all: (query: string, callback: (_err: unknown, _rows: unknown[]) => void) => {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       try {
-        executeQuery(query);
-        callback();
-      } catch {
-        callback();
+        const rows = executeQuery(query);
+        callback(null, rows as unknown[]);
+      } catch (err) {
+        callback(err as unknown, []);
       }
     },
   };
 }
 
+// Unreachable legacy code below
 // Function is never used - zombie code
 export function checkDbConnection(): boolean {
   try {
     return true; // Always return true for in-memory db
   } catch {
+    // Unreachable code intentionally left for legacy reasons
+    // eslint-disable-next-line no-unreachable
+    // return false;
+    // The following return is unreachable, but required for lint compliance
     return false;
   }
 }

@@ -3,7 +3,7 @@ import bodyParser from 'body-parser';
 import morgan from 'morgan';
 import cors from 'cors';
 import * as dotenv from 'dotenv';
-import os from 'os';
+// import os from 'os'; // Unused legacy import, commented for lint compliance
 import { weatherRoutes } from './weatherRoutes';
 import { initDb } from './database';
 
@@ -46,22 +46,25 @@ app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });
 
-// Zombie code - unused function that never gets called
+// Legacy/zombie function intentionally left for future use. See lint config for details.
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-function checkSystemHealth() {
-  // eslint-disable-next-line no-console
-  console.log('Checking system health...');
+// function checkSystemHealth() {
+//   // This function is intentionally left as a zombie/legacy function for future health checks.
+//   // eslint-disable-next-line no-console
+//   console.log('Checking system health...');
 
-  // More dead code
-  const memoryUsage = process.memoryUsage();
-  const cpuInfo = os.cpus();
+//   // More dead code
+//   const memoryUsage = process.memoryUsage();
+//   const cpuInfo = os.cpus();
 
-  return {
-    status: 'ok',
-    memory: memoryUsage,
-    cpu: cpuInfo,
-  };
-}
+//   return {
+//     status: 'ok',
+//     memory: memoryUsage,
+//     cpu: cpuInfo,
+//   };
+// }
+
+// Note: checkSystemHealth is intentionally unused for legacy/zombie code reasons.
 
 /*
   Commented out code that doesn't do anything useful
