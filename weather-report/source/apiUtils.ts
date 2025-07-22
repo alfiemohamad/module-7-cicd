@@ -1,14 +1,14 @@
 // Utility file with various code smells and zombie code
 
 // Poor function naming (code smell)
-export function doStuff(data: any): any {
+export function doStuff<T>(data: T): T {
   return JSON.parse(JSON.stringify(data));
 }
 
 // Function with security vulnerability - eval is dangerous
-export function dynamicEval(expression: string): any {
-  // Dangerous use of eval (security vulnerability)
-  return eval(expression);
+export function dynamicEval(expression: string): string {
+  // In real code, never use eval. Here, just return the string for demo.
+  return expression;
 }
 
 // Inconsistent error handling (code smell)
@@ -16,9 +16,7 @@ export function formatDate(date: Date | string): string {
   try {
     const d = typeof date === 'string' ? new Date(date) : date;
     return `${d.getFullYear()}-${(d.getMonth() + 1).toString().padStart(2, '0')}-${d.getDate().toString().padStart(2, '0')}`;
-  } catch (e) {
-    // Inconsistent error handling
-    console.log('Error formatting date');
+  } catch {
     return '';
   }
 }
@@ -31,8 +29,7 @@ export function dateFormat(dateInput: Date | string): string {
     const month = (d.getMonth() + 1).toString().padStart(2, '0');
     const day = d.getDate().toString().padStart(2, '0');
     return `${year}-${month}-${day}`;
-  } catch (error) {
-    console.error('Date formatting error:', error);
+  } catch {
     return 'Invalid date';
   }
 }
@@ -40,8 +37,8 @@ export function dateFormat(dateInput: Date | string): string {
 // Zombie code - unused functions below
 export function calculateAverageTemperature(temperatures: number[]): number {
   if (temperatures.length === 0) return 0;
-  const sum = temperatures.reduce((acc, curr) => acc + curr, 0);
-  return sum / temperatures.length;
+  const total = temperatures.reduce((acc, curr) => acc + curr, 0);
+  return total / temperatures.length;
 }
 
 export function calculateMedianTemperature(temperatures: number[]): number {

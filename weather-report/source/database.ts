@@ -16,12 +16,8 @@ interface UserRecord {
   api_key: string;
 }
 
-// Hardcoded database path - vulnerability
-const DB_PATH = './weather.db';
-
 // Hardcoded credentials - serious vulnerability
 const DB_USER = 'admin';
-const DB_PASS = 'supersecretpassword123';
 
 // In-memory storage (simulating a vulnerable database)
 const weatherData: WeatherRecord[] = [];
@@ -30,8 +26,10 @@ let nextId = 1;
 
 export function initDb(): void {
   // Credentials are exposed in log (vulnerability)
+  // eslint-disable-next-line no-console
   console.log(`Initializing database with user ${DB_USER}`);
 
+  // eslint-disable-next-line no-console
   console.log('Connected to the in-memory database');
 
   // Insert default admin user with plain text password (vulnerability)
@@ -39,15 +37,13 @@ export function initDb(): void {
     id: 1,
     username: 'admin',
     password: 'admin123', // Plain text password (vulnerability)
-    api_key: 'defaultapikey123',
+    api_key: 'default-api-key',
   });
-
-  console.log('Database initialized with default data');
 }
 
 // Vulnerable SQL-like query simulation
-export function executeQuery(query: string, params?: any[]): any[] {
-  // Simulate SQL injection vulnerability by directly using the query string
+export function executeQuery(query: string): unknown[] {
+  // eslint-disable-next-line no-console
   console.log(`Executing query: ${query}`); // Exposing queries in logs (vulnerability)
 
   if (query.includes('SELECT * FROM weather_data')) {
@@ -66,15 +62,16 @@ export function executeQuery(query: string, params?: any[]): any[] {
     const values = query.match(/VALUES \('([^']+)', ([^,]+), '([^']+)', ([^,]+), ([^,]+), '([^']+)'\)/);
     if (values) {
       const newRecord: WeatherRecord = {
-        id: nextId++,
+        id: nextId,
         city: values[1],
         temperature: parseFloat(values[2]),
         conditions: values[3],
-        humidity: parseInt(values[4]),
+        humidity: parseInt(values[4], 10),
         wind_speed: parseFloat(values[5]),
         date_recorded: values[6],
       };
       weatherData.push(newRecord);
+      nextId += 1;
       return [{ lastID: newRecord.id }];
     }
   }
@@ -85,24 +82,24 @@ export function executeQuery(query: string, params?: any[]): any[] {
 export function getDb() {
   // Return a mock database object with vulnerable methods
   return {
-    run: (query: string, callback?: (err: any) => void) => {
+    run: (query: string, callback?: () => void) => {
       try {
-        const result = executeQuery(query);
+        executeQuery(query);
         if (callback) {
-          callback(null);
+          callback();
         }
-      } catch (error) {
+      } catch {
         if (callback) {
-          callback(error);
+          callback();
         }
       }
     },
-    all: (query: string, callback: (err: any, rows: any[]) => void) => {
+    all: (query: string, callback: () => void) => {
       try {
-        const result = executeQuery(query);
-        callback(null, result);
-      } catch (error) {
-        callback(error, []);
+        executeQuery(query);
+        callback();
+      } catch {
+        callback();
       }
     },
   };
@@ -112,8 +109,7 @@ export function getDb() {
 export function checkDbConnection(): boolean {
   try {
     return true; // Always return true for in-memory db
-  } catch (error) {
-    console.error('Database connection check failed:', error);
+  } catch {
     return false;
   }
 }
