@@ -23,9 +23,9 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">23.68% </span>
+                <span class="strong">25% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>9/38</span>
+                <span class='fraction'>9/36</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">26.47% </span>
+                <span class="strong">28.12% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>9/34</span>
+                <span class='fraction'>9/32</span>
             </div>
         
             
@@ -157,10 +157,7 @@
 <a name='L92'></a><a href='#L92'>92</a>
 <a name='L93'></a><a href='#L93'>93</a>
 <a name='L94'></a><a href='#L94'>94</a>
-<a name='L95'></a><a href='#L95'>95</a>
-<a name='L96'></a><a href='#L96'>96</a>
-<a name='L97'></a><a href='#L97'>97</a>
-<a name='L98'></a><a href='#L98'>98</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L95'></a><a href='#L95'>95</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
@@ -179,8 +176,6 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -194,7 +189,6 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -260,14 +254,14 @@
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">// Utility file with various code smells and zombie code
 &nbsp;
 // Poor function naming (code smell)
-export function <span class="fstat-no" title="function not covered" >doStuff(</span>data: any): any {
+export function <span class="fstat-no" title="function not covered" >doStuff&lt;</span>T&gt;(data: T): T {
 <span class="cstat-no" title="statement not covered" >  return JSON.parse(JSON.stringify(data));</span>
 }
 &nbsp;
 // Function with security vulnerability - eval is dangerous
-export function <span class="fstat-no" title="function not covered" >dynamicEval(</span>expression: string): any {
-  // Dangerous use of eval (security vulnerability)
-<span class="cstat-no" title="statement not covered" >  return eval(expression);</span>
+export function <span class="fstat-no" title="function not covered" >dynamicEval(</span>expression: string): string {
+  // In real code, never use eval. Here, just return the string for demo.
+<span class="cstat-no" title="statement not covered" >  return expression;</span>
 }
 &nbsp;
 // Inconsistent error handling (code smell)
@@ -275,9 +269,7 @@ export function <span class="fstat-no" title="function not covered" >formatDate(
 <span class="cstat-no" title="statement not covered" >  try {</span>
     const d = <span class="cstat-no" title="statement not covered" >typeof date === 'string' ? new Date(date) : date;</span>
 <span class="cstat-no" title="statement not covered" >    return `${d.getFullYear()}-${(d.getMonth() + 1).toString().padStart(2, '0')}-${d.getDate().toString().padStart(2, '0')}`;</span>
-  } catch (e) {
-    // Inconsistent error handling
-<span class="cstat-no" title="statement not covered" >    console.log('Error formatting date');</span>
+  } catch {
 <span class="cstat-no" title="statement not covered" >    return '';</span>
   }
 }
@@ -290,8 +282,7 @@ export function <span class="fstat-no" title="function not covered" >dateFormat(
     const month = <span class="cstat-no" title="statement not covered" >(d.getMonth() + 1).toString().padStart(2, '0');</span>
     const day = <span class="cstat-no" title="statement not covered" >d.getDate().toString().padStart(2, '0');</span>
 <span class="cstat-no" title="statement not covered" >    return `${year}-${month}-${day}`;</span>
-  } catch (error) {
-<span class="cstat-no" title="statement not covered" >    console.error('Date formatting error:', error);</span>
+  } catch {
 <span class="cstat-no" title="statement not covered" >    return 'Invalid date';</span>
   }
 }
@@ -299,8 +290,8 @@ export function <span class="fstat-no" title="function not covered" >dateFormat(
 // Zombie code - unused functions below
 export function <span class="fstat-no" title="function not covered" >calculateAverageTemperature(</span>temperatures: number[]): number {
 <span class="cstat-no" title="statement not covered" >  <span class="missing-if-branch" title="if path not taken" >I</span>if (temperatures.length === 0) <span class="cstat-no" title="statement not covered" >return 0;</span></span>
-  const sum = <span class="cstat-no" title="statement not covered" >temperatures.reduce(<span class="fstat-no" title="function not covered" >(a</span>cc, curr) =&gt; <span class="cstat-no" title="statement not covered" >acc + curr,</span> 0);</span>
-<span class="cstat-no" title="statement not covered" >  return sum / temperatures.length;</span>
+  const total = <span class="cstat-no" title="statement not covered" >temperatures.reduce(<span class="fstat-no" title="function not covered" >(a</span>cc, curr) =&gt; <span class="cstat-no" title="statement not covered" >acc + curr,</span> 0);</span>
+<span class="cstat-no" title="statement not covered" >  return total / temperatures.length;</span>
 }
 &nbsp;
 export function <span class="fstat-no" title="function not covered" >calculateMedianTemperature(</span>temperatures: number[]): number {
@@ -361,7 +352,7 @@ export { sum };
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2025-07-22T13:58:31.754Z
+                at 2025-07-22T14:23:15.924Z
             </div>
         <script src="prettify.js"></script>
         <script>

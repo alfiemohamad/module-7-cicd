@@ -82,42 +82,25 @@ export function executeQuery(query: string): unknown[] {
 export function getDb() {
   // Return a mock database object with vulnerable methods
   return {
-    run: (query: string, callback?: (err?: unknown) => void) => {
+    run: (query: string, callback?: () => void) => {
       try {
         executeQuery(query);
         if (callback) {
           callback();
         }
-      } catch (err) {
+      } catch {
         if (callback) {
-          // eslint-disable-next-line @typescript-eslint/no-unused-vars
-          // eslint-disable-next-line @typescript-eslint/no-empty-function
-          callback((err as unknown) ?? undefined); // 'err' intentionally unused
+          callback(); // error intentionally ignored for mock
         }
       }
     },
-    all: (query: string, callback: (_err: unknown, _rows: unknown[]) => void) => {
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    // eslint-disable-next-line no-unused-vars
+    all: (query: string, callback: (rows: unknown[]) => void) => {
       try {
-        const rows = executeQuery(query);
-        callback(null, rows as unknown[]);
-      } catch (err) {
-        callback(err as unknown, []);
+        callback(executeQuery(query) as unknown[]);
+      } catch {
+        callback([]);
       }
     },
   };
-}
-
-// Unreachable legacy code below
-// Function is never used - zombie code
-export function checkDbConnection(): boolean {
-  try {
-    return true; // Always return true for in-memory db
-  } catch {
-    // Unreachable code intentionally left for legacy reasons
-    // eslint-disable-next-line no-unreachable
-    // return false;
-    // The following return is unreachable, but required for lint compliance
-    return false;
-  }
 }

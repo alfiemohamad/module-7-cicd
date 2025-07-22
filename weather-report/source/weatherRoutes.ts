@@ -1,4 +1,6 @@
-import express from 'express';
+// Prefer default export on a file with single export
+// eslint-disable-next-line import/prefer-default-export
+import express, { Request, Response } from 'express';
 import {
   getWeather,
   getCityHistory,
@@ -6,6 +8,7 @@ import {
   adminLogin,
 } from './weatherController';
 
+// eslint-disable-next-line import/prefer-default-export
 export const weatherRoutes = express.Router();
 
 // Basic routes without proper authentication or rate limiting (vulnerability)
@@ -34,7 +37,7 @@ weatherRoutes.get('/forecast', async (req, res) => {
 */
 
 // No input validation on this route (vulnerability)
-weatherRoutes.get('/search', (req: any, res: any) => {
+weatherRoutes.get('/search', (req: Request, res: Response) => {
   const query = req.query.q;
 
   // This should validate the query parameter but doesn't
