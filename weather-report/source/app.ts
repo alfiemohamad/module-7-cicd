@@ -78,4 +78,9 @@ app.listen(PORT, () => {
   }
 */
 
+function unusedFunction() {
+  // This function is never used (code smell)
+  return 42;
+}
+
 export default app;
