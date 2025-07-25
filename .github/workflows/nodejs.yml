@@ -4,6 +4,17 @@ on:
   push:
     branches:
       - main
+      - dev
+      - dev-sonar
+      - dev/*
+      - feature/*
+  pull_request:
+    branches:
+      - main
+      - dev
+      - dev-sonar
+      - dev/*
+      - feature/*
 
 jobs:
   lint:
