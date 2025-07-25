@@ -70,11 +70,8 @@ jobs:
     needs: build
     steps:
       - uses: actions/checkout@v4
-<<<<<<< dev-sonar
         with:
           fetch-depth: 0  # Shallow clones should be disabled for better analysis
-=======
->>>>>>> main
       - name: Use Node.js
         uses: actions/setup-node@v4
         with:
@@ -86,7 +83,6 @@ jobs:
         uses: SonarSource/sonarcloud-github-action@v2
         with:
           projectBaseDir: ./weather-report
-<<<<<<< dev-sonar
           args: >
             -Dsonar.projectKey=${{ secrets.SONAR_PROJECT_KEY }}
             -Dsonar.organization=${{ secrets.SONAR_ORGANIZATION }}
@@ -105,17 +101,3 @@ jobs:
           else
             echo "Quality Gate failed!" && exit 1
           fi
-=======
-        env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-          SONAR_PROJECT_KEY: ${{ secrets.SONAR_PROJECT_KEY }}
-          SONAR_ORGANIZATION: ${{ secrets.SONAR_ORGANIZATION }}
-      - name: Quality Gate
-        run: |
-          if [ "$(curl -s -u $SONAR_TOKEN: https://sonarcloud.io/api/qualitygates/project_status?projectKey=$SONAR_PROJECT_KEY | jq -r .projectStatus.status)" != "OK" ]; then
-            echo "Quality Gate failed!" && exit 1
-          fi
-        env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-          SONAR_PROJECT_KEY: ${{ secrets.SONAR_PROJECT_KEY }}
->>>>>>> main
