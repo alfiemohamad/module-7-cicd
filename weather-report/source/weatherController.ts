@@ -74,26 +74,15 @@ export async function getWeatherAnalysis(req: Request, res: Response): Promise<v
     const { city } = req.params;
     const db = getDb();
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    db.all(`SELECT * FROM weather_data WHERE city = '${city}'`, (err: any, rows: any[]) => {
-      if (err) {
-        // eslint-disable-next-line no-console
-        console.error('Database error:', err);
-        res.status(500).json({ error: err instanceof Error ? err.message : 'Unknown error' });
+    db.all(`SELECT * FROM weather_data WHERE city = '${city}'`, (rows: any[]) => {
+      if (!rows || rows.length === 0) {
+        res.status(404).json({ error: 'No data found' });
         return;
       }
-      if (!Array.isArray(rows) || rows.length === 0) {
-        res.status(404).json({ error: 'No data found for this city' });
-        return;
-      }
-      // Process the data
-      // eslint-disable-next-line max-len
-      const analysis = processAndAnalyzeWeatherData(rows);
-      // Return the result
       res.json({
         success: true,
-        city,
-        dataPoints: rows.length,
-        analysis,
+        data: rows,
+        analysis: processAndAnalyzeWeatherData(rows),
       });
     });
   } catch (e: unknown) {
