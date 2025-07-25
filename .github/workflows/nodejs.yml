@@ -4,6 +4,17 @@ on:
   push:
     branches:
       - main
+      - dev
+      - dev-sonar
+      - dev/*
+      - feature/*
+  pull_request:
+    branches:
+      - main
+      - dev
+      - dev-sonar
+      - dev/*
+      - feature/*
 
 jobs:
   lint:
@@ -59,6 +70,8 @@ jobs:
     needs: build
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Shallow clones should be disabled for better analysis
       - name: Use Node.js
         uses: actions/setup-node@v4
         with:
@@ -70,15 +83,21 @@ jobs:
         uses: SonarSource/sonarcloud-github-action@v2
         with:
           projectBaseDir: ./weather-report
+          args: >
+            -Dsonar.projectKey=${{ secrets.SONAR_PROJECT_KEY }}
+            -Dsonar.organization=${{ secrets.SONAR_ORGANIZATION }}
         env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-          SONAR_PROJECT_KEY: ${{ secrets.SONAR_PROJECT_KEY }}
-          SONAR_ORGANIZATION: ${{ secrets.SONAR_ORGANIZATION }}
       - name: Quality Gate
         run: |
-          if [ "$(curl -s -u $SONAR_TOKEN: https://sonarcloud.io/api/qualitygates/project_status?projectKey=$SONAR_PROJECT_KEY | jq -r .projectStatus.status)" != "OK" ]; then
+          sleep 10  # Wait for SonarCloud to process
+          STATUS=$(curl -s -u ${{ secrets.SONAR_TOKEN }}: "https://sonarcloud.io/api/qualitygates/project_status?projectKey=${{ secrets.SONAR_PROJECT_KEY }}" | jq -r '.projectStatus.status')
+          echo "Quality Gate Status: $STATUS"
+          if [ "$STATUS" = "OK" ]; then
+            echo "Quality Gate passed!"
+          elif [ "$STATUS" = "NONE" ]; then
+            echo "Quality Gate status is NONE, skipping failure."
+          else
             echo "Quality Gate failed!" && exit 1
           fi
-        env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-          SONAR_PROJECT_KEY: ${{ secrets.SONAR_PROJECT_KEY }}

@@ -3,7 +3,7 @@
     "target": "ES2020",
     "module": "commonjs",
     "outDir": "./dist",
-    "rootDir": "./src",
+    "rootDir": "./source",
     "strict": false,
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
@@ -16,7 +16,7 @@
     "typeRoots": ["./node_modules/@types"]
   },
   "include": [
-    "src/**/*"
+    "source/**/*"
   ],
   "exclude": [
     "node_modules",
